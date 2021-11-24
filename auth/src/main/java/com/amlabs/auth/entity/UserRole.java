@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(	name = "user_roles")
-public class UserRoleEntity {
+public class UserRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
