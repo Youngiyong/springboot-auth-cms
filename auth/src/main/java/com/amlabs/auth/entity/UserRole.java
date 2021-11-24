@@ -4,12 +4,10 @@ package com.amlabs.auth.entity;
 import com.amlabs.auth.model.ERole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
