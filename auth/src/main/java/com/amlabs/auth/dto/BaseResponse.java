@@ -36,7 +36,7 @@ public class BaseResponse {
                 );
     }
 
-    public static ResponseEntity<BaseResponse> BasicErrorEresponse(HttpStatus status, String msg){
+    public static ResponseEntity<BaseResponse> BasicErrorResponse(HttpStatus status, String msg){
         return ResponseEntity
                 .status(status)
                 .body(
@@ -58,4 +58,4 @@ public class BaseResponse {
                 );
 
     }
-} 
+}
