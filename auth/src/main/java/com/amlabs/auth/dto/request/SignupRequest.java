@@ -1,4 +1,4 @@
-package com.amlabs.auth.dto;
+package com.amlabs.auth.dto.request;
 
 import lombok.Getter;
 import java.util.Set;
