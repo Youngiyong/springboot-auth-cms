@@ -13,6 +13,7 @@ import com.amlabs.auth.repository.UserTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,15 +44,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        if (ERole.ADMIN.name().equals(user)) {
-            authorities.add(new SimpleGrantedAuthority(ERole.ADMIN.name()));
-        } else if (ERole.MANAGER.name().equals(user)){
-            authorities.add(new SimpleGrantedAuthority(ERole.MANAGER.name()));
-        } else {
-            authorities.add(new SimpleGrantedAuthority(ERole.MANAGER.name()));
-        }
-
-        return UserDetailsImpl.build(user);
+//        if (ERole.ADMIN.name().equals(user.getUsername())) {
+//            authorities.add(new SimpleGrantedAuthority(ERole.ADMIN.name()));
+//        } else if (ERole.MANAGER.name().equals(user)){
+//            authorities.add(new SimpleGrantedAuthority(ERole.MANAGER.name()));
+//        } else {
+//            authorities.add(new SimpleGrantedAuthority(ERole.USER.name()));
+//        }
+        return new User(user.getEmail(), user.getPassword(), authorities);
+//        return UserDetailsImpl.build(user);
     }
 
     @Transactional

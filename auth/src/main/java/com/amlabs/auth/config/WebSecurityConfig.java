@@ -61,8 +61,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/test/**").permitAll()
-                .anyRequest().authenticated();
-
+                .antMatchers("/swagger-ui/**", "/javainuse-openapi/**").permitAll();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+                // 해당 서비스(userService)에서는 UserDetailsService를 implements해서
+                // loadUserByUsername() 구현해야함 (서비스 참고)
+                .passwordEncoder(new BCryptPasswordEncoder());
     }
 }
