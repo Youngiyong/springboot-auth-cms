@@ -3,8 +3,7 @@ package com.amlabs.auth.service;
 import com.amlabs.auth.dto.BaseResponse;
 import com.amlabs.auth.dto.request.SignupRequest;
 import com.amlabs.auth.entity.UserEntity;
-import com.amlabs.auth.entity.UserRoleEntity;
-import com.amlabs.auth.entity.UserTokenEntity;
+import com.amlabs.auth.entity.RoleEntity;
 import com.amlabs.auth.exception.CustomException;
 import com.amlabs.auth.model.ERole;
 import com.amlabs.auth.repository.UserRepository;
@@ -14,17 +13,14 @@ import com.amlabs.auth.repository.UserTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -33,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     UserRepository userRepository;
 
     @Autowired
-    UserRoleRepository userRoleRepository;
+    UserRoleRepository roleRepository;
 
     @Autowired
     UserTokenRepository userTokenRepository;
@@ -47,12 +43,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        if (ERole.ROLE_ADMIN.name().equals(user)) {
-            authorities.add(new SimpleGrantedAuthority(ERole.ROLE_ADMIN.name()));
-        } else if (ERole.ROLE_MANAGER.name().equals(user)){
-            authorities.add(new SimpleGrantedAuthority(ERole.ROLE_MANAGER.name()));
+        if (ERole.ADMIN.name().equals(user)) {
+            authorities.add(new SimpleGrantedAuthority(ERole.ADMIN.name()));
+        } else if (ERole.MANAGER.name().equals(user)){
+            authorities.add(new SimpleGrantedAuthority(ERole.MANAGER.name()));
         } else {
-            authorities.add(new SimpleGrantedAuthority(ERole.ROLE_MANAGER.name()));
+            authorities.add(new SimpleGrantedAuthority(ERole.MANAGER.name()));
         }
 
         return UserDetailsImpl.build(user);
@@ -60,9 +56,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Transactional
     public BaseResponse save(SignupRequest payload) throws UsernameNotFoundException {
-        if (userRepository.existsByUsername(payload.getUsername()))
+        if (userRepository.existsByEmail(payload.getEmail()))
             throw new CustomException(CustomExceptionCode.EMAIL_IS_EXIST);
 
+        System.out.println(CustomExceptionCode.EMAIL_IS_EXIST);
         if (userRepository.existsByUsername(payload.getUsername()))
             throw new CustomException(CustomExceptionCode.USERNAME_IS_EXIST);
 
@@ -75,11 +72,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         userRepository.save(user);
 
-        Set<String> strRoles = payload.getRole();
-        Set<UserRoleEntity> roles = new HashSet<>();
-
+        Set<String> strRoles = payload.getRoles();
+        Set<RoleEntity> roles = new HashSet<>();
+        System.out.println(ERole.ADMIN.name());
         if (strRoles == null){
-            UserRoleEntity userRole = userRoleRepository.findByName(ERole.ROLE_USER).get();
+            RoleEntity userRole = roleRepository.findByName(ERole.ADMIN).get();
 
             if(userRole==null)
                 throw new CustomException(CustomExceptionCode.REQUEST_ROLE_NOT_FOUND);
@@ -89,8 +86,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         } else {
             for (String role: strRoles){
                 switch (role) {
-                    case "admin":
-                        UserRoleEntity adminRole = userRoleRepository.findByName(ERole.ROLE_ADMIN).get();
+                    case "ADMIN":
+                        RoleEntity adminRole = roleRepository.findByName(ERole.ADMIN).get();
 
                         if(adminRole==null){
                             throw new CustomException(CustomExceptionCode.REQUEST_ROLE_NOT_FOUND);
@@ -98,8 +95,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         roles.add(adminRole);
 
                         break;
-                    case "manager":
-                        UserRoleEntity managerRole = userRoleRepository.findByName(ERole.ROLE_MANAGER).get();
+                    case "MANAGER":
+                        RoleEntity managerRole = roleRepository.findByName(ERole.MANAGER).get();
 
                         if(managerRole==null){
                             throw new CustomException(CustomExceptionCode.REQUEST_ROLE_NOT_FOUND);
@@ -108,7 +105,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
                         break;
                     default:
-                        UserRoleEntity userRole = userRoleRepository.findByName(ERole.ROLE_USER).get();
+                        RoleEntity userRole = roleRepository.findByName(ERole.USER).get();
 
                         if(userRole==null){
                             throw new CustomException(CustomExceptionCode.REQUEST_ROLE_NOT_FOUND);

@@ -1,18 +1,14 @@
 package com.amlabs.auth.entity;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,7 +38,7 @@ public class UserEntity {
     @JoinTable(	name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<UserRoleEntity> roles = new HashSet<>();
+    private Set<RoleEntity> roles = new HashSet<>();
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
