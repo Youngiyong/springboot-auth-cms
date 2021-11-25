@@ -18,7 +18,6 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Builder
 @Entity
 @Table(	name = "users",
         uniqueConstraints = {
@@ -36,7 +35,7 @@ public class UserEntity {
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 100)
+    @Column(name = "password", nullable = false, length = 255)
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)

@@ -5,8 +5,8 @@ spring:
     username: root
     password: qwe123!@#
   jpa:
-    hibernate:
-      ddl-auto: create
+#    hibernate:
+#      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
