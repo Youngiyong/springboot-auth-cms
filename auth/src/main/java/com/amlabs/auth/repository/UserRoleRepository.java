@@ -1,9 +1,14 @@
 package com.amlabs.auth.repository;
 
-import com.amlabs.auth.entity.UserRole;
+import com.amlabs.auth.entity.UserRoleEntity;
+import com.amlabs.auth.model.ERole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
+
 @Repository
-public interface UserRoleRepository extends JpaRepository<UserRole, Long> {
+public interface UserRoleRepository extends JpaRepository<UserRoleEntity, Long> {
+    Optional<UserRoleEntity> findByName(ERole name);
 }

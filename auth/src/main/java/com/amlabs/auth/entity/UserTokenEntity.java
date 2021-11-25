@@ -1,10 +1,15 @@
 package com.amlabs.auth.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Data
+@NoArgsConstructor
 @Entity(name="user_tokens")
-public class UserToken {
+public class UserTokenEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -12,7 +17,7 @@ public class UserToken {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    private UserEntity user;
 
     @Column(nullable = false, unique = true)
     private String token;
