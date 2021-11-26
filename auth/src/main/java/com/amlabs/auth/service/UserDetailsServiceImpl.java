@@ -66,7 +66,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Set<String> strRoles = payload.getRoles();
         Set<RoleEntity> roles = new HashSet<>();
         if (strRoles == null){
-            RoleEntity userRole = roleRepository.findByName(ERole.ADMIN).get();
+            RoleEntity userRole = roleRepository.findByName(ERole.ROLE_ADMIN).get();
 
             if(userRole==null)
                 throw new CustomException(CustomExceptionCode.REQUEST_ROLE_NOT_FOUND);
@@ -77,7 +77,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             for (String role: strRoles){
                 switch (role) {
                     case "ADMIN":
-                        RoleEntity adminRole = roleRepository.findByName(ERole.ADMIN).get();
+                        RoleEntity adminRole = roleRepository.findByName(ERole.ROLE_ADMIN).get();
 
                         if(adminRole==null){
                             throw new CustomException(CustomExceptionCode.REQUEST_ROLE_NOT_FOUND);
@@ -86,7 +86,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
                         break;
                     case "MANAGER":
-                        RoleEntity managerRole = roleRepository.findByName(ERole.MANAGER).get();
+                        RoleEntity managerRole = roleRepository.findByName(ERole.ROLE_MANAGER).get();
 
                         if(managerRole==null){
                             throw new CustomException(CustomExceptionCode.REQUEST_ROLE_NOT_FOUND);
@@ -95,7 +95,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
                         break;
                     default:
-                        RoleEntity userRole = roleRepository.findByName(ERole.USER).get();
+                        RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER).get();
 
                         if(userRole==null){
                             throw new CustomException(CustomExceptionCode.REQUEST_ROLE_NOT_FOUND);
