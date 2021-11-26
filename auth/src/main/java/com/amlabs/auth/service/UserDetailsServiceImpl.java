@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -35,24 +36,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     UserTokenRepository userTokenRepository;
 
+    @Transactional
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User " + username + " can not be found");
         }
-
-        List<GrantedAuthority> authorities = new ArrayList<>();
-
-//        if (ERole.ADMIN.name().equals(user.getUsername())) {
-//            authorities.add(new SimpleGrantedAuthority(ERole.ADMIN.name()));
-//        } else if (ERole.MANAGER.name().equals(user)){
-//            authorities.add(new SimpleGrantedAuthority(ERole.MANAGER.name()));
-//        } else {
-//            authorities.add(new SimpleGrantedAuthority(ERole.USER.name()));
-//        }
-        return new User(user.getEmail(), user.getPassword(), authorities);
-//        return UserDetailsImpl.build(user);
+        return UserDetailsImpl.build(user);
     }
 
     @Transactional
@@ -60,14 +51,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (userRepository.existsByEmail(payload.getEmail()))
             throw new CustomException(CustomExceptionCode.EMAIL_IS_EXIST);
 
-        System.out.println(CustomExceptionCode.EMAIL_IS_EXIST);
         if (userRepository.existsByUsername(payload.getUsername()))
             throw new CustomException(CustomExceptionCode.USERNAME_IS_EXIST);
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         UserEntity user = UserEntity.builder()
                 .email(payload.getEmail())
-                .username(payload.getEmail())
+                .username(payload.getUsername())
                 .password(encoder.encode(payload.getPassword()))
                 .build();
 
@@ -75,7 +65,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Set<String> strRoles = payload.getRoles();
         Set<RoleEntity> roles = new HashSet<>();
-        System.out.println(ERole.ADMIN.name());
         if (strRoles == null){
             RoleEntity userRole = roleRepository.findByName(ERole.ADMIN).get();
 

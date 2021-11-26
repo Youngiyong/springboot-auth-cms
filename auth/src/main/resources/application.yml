@@ -5,12 +5,12 @@ spring:
     username: root
     password: qwe123!@#
   jwt:
-    secret: secret
-    expirationMs : 60000
-    refreshExpirationMs: 120000
+    secret: ocAprU91JlJ6okAYguWmvlzofi8fHSSdAccncYi3RCpwjjzxFEFbl7wIGDCp5lPaolEmDmw9njhHRintwYCCok88Dxgv71WCSkm0cTrxzkOKpEiTaCZs3m9qG0HekRQwGZhjBevMk2HGrxcPxIO0EOslwxtiYnpEmdPlMdMs0qZRQ9lAtOfIkv5kgTb5FjJL02QsD4lD
+    accessTokenExpirationMs : 3000000
+    refreshExpirationMs: 30000000
   jpa:
-#    hibernate:
-#      ddl-auto: create
+    hibernate:
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:

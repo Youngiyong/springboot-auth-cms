@@ -1,5 +1,6 @@
 package com.amlabs.auth.repository;
 
+import com.amlabs.auth.entity.UserEntity;
 import com.amlabs.auth.entity.UserTokenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,6 +12,6 @@ import java.util.Optional;
 public interface UserTokenRepository extends JpaRepository<UserTokenEntity, Long> {
     Optional<UserTokenEntity> findByToken(String token);
 
-//    @Modifying
-//    int deleteByUser(User user);
+    @Modifying
+    int deleteByUser(UserEntity user);
 }

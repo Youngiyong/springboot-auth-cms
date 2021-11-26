@@ -1,12 +1,16 @@
 package com.amlabs.auth.jwt;
 
 import com.amlabs.auth.service.UserDetailsImpl;
+import com.google.gson.Gson;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 
 @Component
@@ -16,21 +20,37 @@ public class JwtUtils {
   @Value("${spring.jwt.secret}")
   private String jwtSecret;
 
-  @Value("${spring.jwt.expirationMs}")
-  private int jwtExpirationMs;
+  @Value("${spring.jwt.accessTokenExpirationMs}")
+  private int jwtAccessTokenExpirationMs;
 
-  public String generateJwtToken(UserDetailsImpl userPrincipal) {
-    return generateTokenFromUsername(userPrincipal.getUsername());
+  @Value("${spring.jwt.refreshExpirationMs}")
+  private int jwtRefreshTokenExpirationMs;
+
+  public String generateRefreshToken(UserDetailsImpl user) {
+    return Jwts.builder()
+            .setIssuedAt(new Date())
+            .setExpiration(new Date((new Date()).getTime() + jwtRefreshTokenExpirationMs))
+            .claim("id", user.getId())
+            .claim("username", user.getUsername())
+            .claim("email", user.getEmail())
+            .signWith(SignatureAlgorithm.HS512, jwtSecret)
+            .compact();
   }
 
-  public String generateTokenFromUsername(String username) {
-    return Jwts.builder().setSubject(username).setIssuedAt(new Date())
-        .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)).signWith(SignatureAlgorithm.HS512, jwtSecret)
-        .compact();
+  public String generateAccessToken(UserDetailsImpl user) {
+    return Jwts.builder()
+            .setIssuedAt(new Date())
+            .setExpiration(new Date((new Date()).getTime() + jwtAccessTokenExpirationMs))
+            .claim("id", user.getId())
+            .claim("username", user.getUsername())
+            .claim("email", user.getEmail())
+            .signWith(SignatureAlgorithm.HS512, jwtSecret)
+            .compact();
   }
+
 
   public String getUserNameFromJwtToken(String token) {
-    return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+    return (String) Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().get("username");
   }
 
   public boolean validateJwtToken(String authToken) {
